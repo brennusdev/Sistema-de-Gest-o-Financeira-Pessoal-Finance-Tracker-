@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Entrar · Finance Tracker{% endblock %}
+{% block content_public %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-mark">₡</span>
+      <h1>Finance Tracker</h1>
+      <p class="auth-tagline">Seu livro-caixa pessoal, linha por linha.</p>
+    </div>
+
+    <form method="POST" class="ledger-form">
+      <label>
+        E-mail
+        <input type="email" name="email" required autofocus placeholder="voce@email.com">
+      </label>
+      <label>
+        Senha
+        <input type="password" name="senha" required placeholder="••••••••">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+    </form>
+
+    <p class="auth-switch">Ainda não tem conta? <a href="{{ url_for('auth.registro') }}">Criar conta</a></p>
+  </div>
+</div>
+{% endblock %}
