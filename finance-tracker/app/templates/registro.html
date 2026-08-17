@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Criar conta · Finance Tracker{% endblock %}
+{% block content_public %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-mark">₡</span>
+      <h1>Criar conta</h1>
+      <p class="auth-tagline">Comece a registrar suas contas hoje.</p>
+    </div>
+
+    <form method="POST" class="ledger-form">
+      <label>
+        Nome
+        <input type="text" name="nome" required autofocus value="{{ nome or '' }}" placeholder="Seu nome">
+      </label>
+      <label>
+        E-mail
+        <input type="email" name="email" required value="{{ email or '' }}" placeholder="voce@email.com">
+      </label>
+      <label>
+        Senha
+        <input type="password" name="senha" required placeholder="Mínimo 6 caracteres">
+      </label>
+      <label>
+        Confirmar senha
+        <input type="password" name="confirmar_senha" required placeholder="Repita a senha">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Criar conta</button>
+    </form>
+
+    <p class="auth-switch">Já tem conta? <a href="{{ url_for('auth.login') }}">Entrar</a></p>
+  </div>
+</div>
+{% endblock %}
