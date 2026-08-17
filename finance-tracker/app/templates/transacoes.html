@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Transações · Finance Tracker{% endblock %}
+{% block content %}
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Livro-caixa</p>
+    <h1>Transações</h1>
+  </div>
+  <a href="{{ url_for('transacoes.nova') }}" class="btn btn-primary">+ Nova transação</a>
+</header>
+
+<form method="GET" class="filter-bar">
+  <label>
+    Tipo
+    <select name="tipo">
+      <option value="" {{ 'selected' if not filtros.tipo }}>Todos</option>
+      <option value="receita" {{ 'selected' if filtros.tipo == 'receita' }}>Receitas</option>
+      <option value="despesa" {{ 'selected' if filtros.tipo == 'despesa' }}>Despesas</option>
+    </select>
+  </label>
+  <label>
+    Categoria
+    <select name="categoria_id">
+      <option value="">Todas</option>
+      {% for c in categorias %}
+      <option value="{{ c.id }}" {{ 'selected' if filtros.categoria_id == c.id|string }}>{{ c.nome }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    De
+    <input type="date" name="data_inicio" value="{{ filtros.data_inicio }}">
+  </label>
+  <label>
+    Até
+    <input type="date" name="data_fim" value="{{ filtros.data_fim }}">
+  </label>
+  <button type="submit" class="btn btn-secondary">Filtrar</button>
+  <a href="{{ url_for('transacoes.listar') }}" class="link-quiet">Limpar</a>
+</form>
+
+<section class="ledger-strip ledger-strip-compact">
+  <div class="stub">
+    <span class="stub-label">Total receitas (filtro)</span>
+    <span class="stub-value positivo">R$ {{ "%.2f"|format(total_receitas) }}</span>
+  </div>
+  <div class="stub">
+    <span class="stub-label">Total despesas (filtro)</span>
+    <span class="stub-value negativo">R$ {{ "%.2f"|format(total_despesas) }}</span>
+  </div>
+  <div class="stub">
+    <span class="stub-label">Saldo (filtro)</span>
+    {% set saldo_filtro = total_receitas - total_despesas %}
+    <span class="stub-value {{ 'positivo' if saldo_filtro >= 0 else 'negativo' }}">R$ {{ "%.2f"|format(saldo_filtro) }}</span>
+  </div>
+</section>
+
+<section class="card">
+  <table class="ledger-table">
+    <thead>
+      <tr>
+        <th>Data</th><th>Descrição</th><th>Categoria</th>
+        <th class="alinhar-direita">Valor</th><th class="alinhar-direita">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in transacoes %}
+      <tr>
+        <td>{{ t.data.strftime('%d/%m/%Y') }}</td>
+        <td>{{ t.descricao }}</td>
+        <td>{{ t.categoria.nome if t.categoria else "—" }}</td>
+        <td class="alinhar-direita {{ 'positivo' if t.tipo == 'receita' else 'negativo' }}">
+          {{ '+' if t.tipo == 'receita' else '-' }} R$ {{ "%.2f"|format(t.valor) }}
+        </td>
+        <td class="alinhar-direita acoes">
+          <a href="{{ url_for('transacoes.editar', transacao_id=t.id) }}" class="link-quiet">Editar</a>
+          <form method="POST" action="{{ url_for('transacoes.excluir', transacao_id=t.id) }}" class="inline-form"
+                onsubmit="return confirm('Excluir esta transação?');">
+            <button type="submit" class="link-quiet link-danger">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="empty-note">Nenhuma transação encontrada para este filtro.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}
