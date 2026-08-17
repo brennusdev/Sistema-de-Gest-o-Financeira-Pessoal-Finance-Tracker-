@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if editando else 'Nova' }} transação · Finance Tracker{% endblock %}
+{% block content %}
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Livro-caixa</p>
+    <h1>{{ 'Editar transação' if editando else 'Nova transação' }}</h1>
+  </div>
+</header>
+
+<section class="card card-narrow">
+  <form method="POST" class="ledger-form">
+    <label>
+      Descrição
+      <input type="text" name="descricao" required maxlength="200" value="{{ form.descricao }}" placeholder="Ex: Mercado do mês">
+    </label>
+
+    <div class="form-row">
+      <label>
+        Tipo
+        <select name="tipo" required>
+          <option value="">Selecione</option>
+          <option value="receita" {{ 'selected' if form.tipo == 'receita' }}>Receita</option>
+          <option value="despesa" {{ 'selected' if form.tipo == 'despesa' }}>Despesa</option>
+        </select>
+      </label>
+      <label>
+        Valor (R$)
+        <input type="text" name="valor" required placeholder="0,00" value="{{ form.valor }}">
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>
+        Data
+        <input type="date" name="data" required value="{{ form.data }}">
+      </label>
+      <label>
+        Categoria
+        <select name="categoria_id">
+          <option value="">Sem categoria</option>
+          {% for c in categorias %}
+          <option value="{{ c.id }}" {{ 'selected' if form.categoria_id == c.id|string }}>
+            {{ c.nome }} ({{ 'Receita' if c.tipo == 'receita' else 'Despesa' }})
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('transacoes.listar') }}" class="btn btn-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-primary">{{ 'Salvar alterações' if editando else 'Adicionar transação' }}</button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}
